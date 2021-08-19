@@ -15,17 +15,18 @@
  */
 
 terraform {
-  required_version = ">= 0.13"
-  required_providers {
+  required_version = ">= 0.15"
+  experiments      = [module_variable_optional_attrs]
 
+  required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "~> 3.63"
+      version = "~> 3.77"
     }
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-google-bigquery/v5.1.0"
+    module_name = "blueprints/terraform/terraform-google-bigquery/v5.2.0"
   }
 
 }
