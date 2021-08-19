@@ -15,12 +15,7 @@
  */
 
 locals {
-  tables = { for table in var.tables :
-    table["table_id"] => defaults(table, {
-      deletion_protection = true
-    })
-  }
-  # tables          = { for table in var.tables : table["table_id"] => table }
+  tables          = { for table in var.tables : table["table_id"] => table }
   views           = { for view in var.views : view["view_id"] => view }
   external_tables = { for external_table in var.external_tables : external_table["table_id"] => external_table }
   routines        = { for routine in var.routines : routine["routine_id"] => routine }
@@ -63,6 +58,22 @@ resource "google_bigquery_dataset" "main" {
       special_group  = lookup(access.value, "special_group", null)
     }
   }
+
+  dynamic "access" {
+    for_each = var.authorized_views
+    content {
+      role           = ""
+      group_by_email = ""
+      user_by_email  = ""
+      special_group  = ""
+      domain         = ""
+      view {
+        project_id = access.value.project_id
+        dataset_id = access.value.dataset_id
+        table_id   = access.value.table_id
+      }
+    }
+  }
 }
 
 resource "google_bigquery_table" "main" {
@@ -75,8 +86,7 @@ resource "google_bigquery_table" "main" {
   clustering          = each.value["clustering"]
   expiration_time     = each.value["expiration_time"]
   project             = var.project_id
-  # deletion_protection = var.deletion_protection
-  deletion_protection = each.value["deletion_protection"]
+  deletion_protection = var.deletion_protection
 
   dynamic "time_partitioning" {
     for_each = each.value["time_partitioning"] != null ? [each.value["time_partitioning"]] : []
