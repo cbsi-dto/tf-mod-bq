@@ -15,7 +15,11 @@
  */
 
 locals {
-  tables             = { for table in var.tables : table["table_id"] => table }
+  tables = { for table in var.tables :
+    table["table_id"] => defaults(table, {
+      deletion_protection = true
+    })
+  }
   views              = { for view in var.views : view["view_id"] => view }
   materialized_views = { for mat_view in var.materialized_views : mat_view["view_id"] => mat_view }
   external_tables    = { for external_table in var.external_tables : external_table["table_id"] => external_table }
@@ -88,7 +92,7 @@ resource "google_bigquery_table" "main" {
   clustering          = each.value["clustering"]
   expiration_time     = each.value["expiration_time"]
   project             = var.project_id
-  deletion_protection = var.deletion_protection
+  deletion_protection = each.value["deletion_protection"]
 
   dynamic "time_partitioning" {
     for_each = each.value["time_partitioning"] != null ? [each.value["time_partitioning"]] : []

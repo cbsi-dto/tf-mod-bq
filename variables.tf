@@ -119,9 +119,10 @@ variable "tables" {
         interval = string,
       }),
     }),
-    expiration_time = string,
-    labels          = map(string),
-    description     = string,
+    expiration_time     = string,
+    labels              = map(string),
+    description         = string,
+    deletion_protection = optional(bool),
   }))
 }
 
