@@ -15,11 +15,7 @@
  */
 
 locals {
-  tables = { for table in var.tables :
-    table["table_id"] => defaults(table, {
-      deletion_protection = true
-    })
-  }
+  tables             = { for table in var.tables : table["table_id"] => table }
   views              = { for view in var.views : view["view_id"] => view }
   materialized_views = { for mat_view in var.materialized_views : mat_view["view_id"] => mat_view }
   external_tables    = { for external_table in var.external_tables : external_table["table_id"] => external_table }

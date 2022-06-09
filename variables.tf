@@ -122,7 +122,7 @@ variable "tables" {
     expiration_time     = string,
     labels              = map(string),
     description         = string,
-    deletion_protection = optional(bool),
+    deletion_protection = optional(bool, true),
   }))
 }
 
