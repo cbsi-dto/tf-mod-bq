@@ -134,6 +134,7 @@ variable "views" {
     use_legacy_sql = bool,
     labels         = map(string),
     description    = string,
+    schema         = string,
   }))
 }
 
