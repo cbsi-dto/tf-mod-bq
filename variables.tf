@@ -98,6 +98,15 @@ variable "authorized_views" {
   default = []
 }
 
+variable "authorized_datasets" {
+  description = "An array of datasets to be authorized on the dataset"
+  type = list(object({
+    dataset_id = string,
+    project_id = string,
+  }))
+  default = []
+}
+
 variable "tables" {
   description = "A list of objects which include table_id, schema, clustering, time_partitioning, range_partitioning, expiration_time and labels."
   default     = []
