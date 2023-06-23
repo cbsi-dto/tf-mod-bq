@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,12 @@ variable "deletion_protection" {
 
 variable "default_table_expiration_ms" {
   description = "TTL of tables using the dataset in MS"
+  type        = number
+  default     = null
+}
+
+variable "max_time_travel_hours" {
+  description = "Defines the time travel window in hours"
   type        = number
   default     = null
 }
@@ -108,12 +114,14 @@ variable "authorized_datasets" {
 }
 
 variable "tables" {
-  description = "A list of objects which include table_id, schema, clustering, time_partitioning, range_partitioning, expiration_time and labels."
+  description = "A list of objects which include table_id, table_name, schema, clustering, time_partitioning, range_partitioning, expiration_time and labels."
   default     = []
   type = list(object({
-    table_id   = string,
-    schema     = string,
-    clustering = list(string),
+    table_id    = string,
+    description = optional(string),
+    table_name  = optional(string),
+    schema      = string,
+    clustering  = list(string),
     time_partitioning = object({
       expiration_ms            = string,
       field                    = string,
@@ -140,6 +148,7 @@ variable "views" {
   default     = []
   type = list(object({
     view_id        = string,
+    description    = optional(string),
     query          = string,
     use_legacy_sql = bool,
     labels         = map(string),
@@ -153,6 +162,7 @@ variable "materialized_views" {
   default     = []
   type = list(object({
     view_id             = string,
+    description         = optional(string),
     query               = string,
     enable_refresh      = bool,
     refresh_interval_ms = string,
@@ -181,6 +191,7 @@ variable "external_tables" {
   default     = []
   type = list(object({
     table_id              = string,
+    description           = optional(string),
     autodetect            = bool,
     compression           = string,
     ignore_unknown_values = bool,

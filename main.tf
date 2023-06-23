@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,7 @@ resource "google_bigquery_dataset" "main" {
   location                    = var.location
   delete_contents_on_destroy  = var.delete_contents_on_destroy
   default_table_expiration_ms = var.default_table_expiration_ms
+  max_time_travel_hours       = var.max_time_travel_hours
   project                     = var.project_id
   labels                      = var.dataset_labels
 
@@ -67,10 +68,46 @@ resource "google_bigquery_dataset" "main" {
       # Thus, do the conversion between IAM to primitive role here to prevent the diff.
       role = lookup(local.iam_to_primitive, access.value.role, access.value.role)
 
-      domain         = lookup(access.value, "domain", null)
-      group_by_email = lookup(access.value, "group_by_email", null)
-      user_by_email  = lookup(access.value, "user_by_email", null)
-      special_group  = lookup(access.value, "special_group", null)
+      # Additionally, using null as a default value would lead to a permanant diff
+      # See https://github.com/hashicorp/terraform-provider-google/issues/4085#issuecomment-516923872
+      domain         = lookup(access.value, "domain", "")
+      group_by_email = lookup(access.value, "group_by_email", "")
+      user_by_email  = lookup(access.value, "user_by_email", "")
+      special_group  = lookup(access.value, "special_group", "")
+    }
+  }
+
+  dynamic "access" {
+    for_each = local.auth_views
+    content {
+      role           = ""
+      group_by_email = ""
+      user_by_email  = ""
+      special_group  = ""
+      domain         = ""
+      view {
+        project_id = access.value.project_id
+        dataset_id = access.value.dataset_id
+        table_id   = access.value.table_id
+      }
+    }
+  }
+
+  dynamic "access" {
+    for_each = local.auth_datasets
+    content {
+      role           = ""
+      group_by_email = ""
+      user_by_email  = ""
+      special_group  = ""
+      domain         = ""
+      dataset {
+        dataset {
+          project_id = access.value.project_id
+          dataset_id = access.value.dataset_id
+        }
+        target_types = ["VIEWS"]
+      }
     }
   }
 
@@ -112,8 +149,9 @@ resource "google_bigquery_dataset" "main" {
 resource "google_bigquery_table" "main" {
   for_each            = local.tables
   dataset_id          = google_bigquery_dataset.main.dataset_id
-  friendly_name       = each.key
+  friendly_name       = each.value["table_name"] != null ? each.value["table_name"] : each.key
   table_id            = each.key
+  description         = each.value["description"]
   labels              = each.value["labels"]
   description         = each.value["description"]
   schema              = each.value["schema"]
@@ -158,6 +196,7 @@ resource "google_bigquery_table" "view" {
   description         = each.value["description"]
   schema              = each.value["schema"]
   table_id            = each.key
+  description         = each.value["description"]
   labels              = each.value["labels"]
   project             = var.project_id
   deletion_protection = false
@@ -179,6 +218,7 @@ resource "google_bigquery_table" "materialized_view" {
   dataset_id          = google_bigquery_dataset.main.dataset_id
   friendly_name       = each.key
   table_id            = each.key
+  description         = each.value["description"]
   labels              = each.value["labels"]
   clustering          = each.value["clustering"]
   expiration_time     = each.value["expiration_time"]
@@ -225,6 +265,7 @@ resource "google_bigquery_table" "external_table" {
   dataset_id          = google_bigquery_dataset.main.dataset_id
   friendly_name       = each.key
   table_id            = each.key
+  description         = each.value["description"]
   labels              = each.value["labels"]
   expiration_time     = each.value["expiration_time"]
   project             = var.project_id
