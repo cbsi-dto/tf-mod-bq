@@ -153,7 +153,6 @@ resource "google_bigquery_table" "main" {
   table_id            = each.key
   description         = each.value["description"]
   labels              = each.value["labels"]
-  description         = each.value["description"]
   schema              = each.value["schema"]
   clustering          = each.value["clustering"]
   expiration_time     = each.value["expiration_time"]
@@ -196,7 +195,6 @@ resource "google_bigquery_table" "view" {
   description         = each.value["description"]
   schema              = each.value["schema"]
   table_id            = each.key
-  description         = each.value["description"]
   labels              = each.value["labels"]
   project             = var.project_id
   deletion_protection = false
