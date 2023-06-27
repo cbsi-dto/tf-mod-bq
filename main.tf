@@ -195,6 +195,7 @@ resource "google_bigquery_table" "view" {
   description         = each.value["description"]
   schema              = each.value["schema"]
   table_id            = each.key
+  description         = each.value["description"]
   labels              = each.value["labels"]
   project             = var.project_id
   deletion_protection = false
@@ -263,6 +264,7 @@ resource "google_bigquery_table" "external_table" {
   dataset_id          = google_bigquery_dataset.main.dataset_id
   friendly_name       = each.key
   table_id            = each.key
+  description         = each.value["description"]
   description         = each.value["description"]
   labels              = each.value["labels"]
   expiration_time     = each.value["expiration_time"]
