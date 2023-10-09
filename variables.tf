@@ -143,6 +143,7 @@ variable "tables" {
       }),
     }),
     expiration_time     = string,
+    max_staleness       = optional(string),
     labels              = map(string),
     deletion_protection = optional(bool, true),
   }))
@@ -204,6 +205,7 @@ variable "external_tables" {
     schema                = optional(string),
     source_format         = string,
     source_uris           = list(string),
+    max_staleness         = optional(string),
     csv_options = object({
       quote                 = string,
       allow_jagged_rows     = bool,
