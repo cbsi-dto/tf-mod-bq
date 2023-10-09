@@ -281,6 +281,7 @@ resource "google_bigquery_table" "external_table" {
     schema                = each.value["schema"]
     source_format         = each.value["source_format"]
     source_uris           = each.value["source_uris"]
+    metadata_cache_mode   = each.value["metadata_cache_mode"]
 
     dynamic "csv_options" {
       for_each = each.value["csv_options"] != null ? [each.value["csv_options"]] : []

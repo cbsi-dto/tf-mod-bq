@@ -206,6 +206,7 @@ variable "external_tables" {
     source_format         = string,
     source_uris           = list(string),
     max_staleness         = optional(string),
+    metadata_cache_mode   = optional(string)
     csv_options = object({
       quote                 = string,
       allow_jagged_rows     = bool,
