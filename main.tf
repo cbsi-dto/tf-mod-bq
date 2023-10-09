@@ -156,6 +156,7 @@ resource "google_bigquery_table" "main" {
   schema              = each.value["schema"]
   clustering          = each.value["clustering"]
   expiration_time     = each.value["expiration_time"]
+  max_staleness       = each.value["max_staleness"]
   project             = var.project_id
   deletion_protection = each.value["deletion_protection"]
 
@@ -266,6 +267,7 @@ resource "google_bigquery_table" "external_table" {
   description         = each.value["description"]
   labels              = each.value["labels"]
   expiration_time     = each.value["expiration_time"]
+  max_staleness       = each.value["max_staleness"]
   project             = var.project_id
   deletion_protection = false
 
