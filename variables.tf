@@ -206,7 +206,8 @@ variable "external_tables" {
     source_format         = string,
     source_uris           = list(string),
     max_staleness         = optional(string),
-    metadata_cache_mode   = optional(string)
+    metadata_cache_mode   = optional(string),
+    connection_id         = optional(string),
     csv_options = object({
       quote                 = string,
       allow_jagged_rows     = bool,
@@ -223,10 +224,15 @@ variable "external_tables" {
       mode              = string,
       source_uri_prefix = string,
     }),
-    expiration_time     = string,
-    max_staleness       = optional(string),
-    deletion_protection = optional(bool),
-    labels              = map(string),
+    parquet_options = object({
+      enum_as_string        = bool,
+      enable_list_inference = bool,
+    }),
+    avro_options = object({
+      use_avro_logical_types = bool,
+    }),
+    expiration_time = string,
+    labels          = map(string),
   }))
 }
 

@@ -282,6 +282,7 @@ resource "google_bigquery_table" "external_table" {
     source_format         = each.value["source_format"]
     source_uris           = each.value["source_uris"]
     metadata_cache_mode   = each.value["metadata_cache_mode"]
+    connection_id         = each.value["connection_id"]
 
     dynamic "csv_options" {
       for_each = each.value["csv_options"] != null ? [each.value["csv_options"]] : []
@@ -308,6 +309,21 @@ resource "google_bigquery_table" "external_table" {
       content {
         mode              = hive_partitioning_options.value["mode"]
         source_uri_prefix = hive_partitioning_options.value["source_uri_prefix"]
+      }
+    }
+
+    dynamic "parquet_options" {
+      for_each = each.value["parquet_options"] != null ? [each.value["parquet_options"]] : []
+      content {
+        enum_as_string        = parquet_options.value["enum_as_string"]
+        enable_list_inference = parquet_options.value["enable_list_inference"]
+      }
+    }
+
+    dynamic "avro_options" {
+      for_each = each.value["avro_options"] != null ? [each.value["avro_options"]] : []
+      content {
+        use_avro_logical_types = avro_options.value["use_avro_logical_types "]
       }
     }
   }
