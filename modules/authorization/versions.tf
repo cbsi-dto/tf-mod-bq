@@ -20,12 +20,12 @@ terraform {
 
     google = {
       source  = "hashicorp/google"
-      version = ">= 4.44, < 5.0"
+      version = ">= 4.44, < 6"
     }
   }
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-google-bigquery:authorization/v6.1.1"
+    module_name = "blueprints/terraform/terraform-google-bigquery:authorization/v7.0.0"
   }
 
 }
