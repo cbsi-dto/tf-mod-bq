@@ -30,6 +30,12 @@ spec:
         access:
           name: access
           title: Access
+        authorized_datasets:
+          name: authorized_datasets
+          title: Authorized Datasets
+        authorized_views:
+          name: authorized_views
+          title: Authorized Views
         dataset_id:
           name: dataset_id
           title: Dataset Id
@@ -57,6 +63,9 @@ spec:
         external_tables:
           name: external_tables
           title: External Tables
+        is_case_insensitive:
+          name: is_case_insensitive
+          title: Is Case Insensitive
         location:
           name: location
           title: Location
