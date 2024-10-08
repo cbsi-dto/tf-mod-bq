@@ -272,14 +272,14 @@ resource "google_bigquery_table" "external_table" {
   max_staleness       = each.value["max_staleness"]
   project             = var.project_id
   deletion_protection = false
-  schema              = each.value["connection_id"] != null ? each.value["schema"] : null
+  schema              = each.value["connection_id"] != null && !each.value["autodetect"] ? each.value["schema"] : null
 
   external_data_configuration {
     autodetect            = each.value["autodetect"]
     compression           = each.value["compression"]
     ignore_unknown_values = each.value["ignore_unknown_values"]
     max_bad_records       = each.value["max_bad_records"]
-    schema                = each.value["connection_id"] == null ? each.value["schema"] : null
+    schema                = each.value["connection_id"] == null && !each.value["autodetect"] ? each.value["schema"] : null
     source_format         = each.value["source_format"]
     source_uris           = each.value["source_uris"]
     metadata_cache_mode   = each.value["metadata_cache_mode"]
