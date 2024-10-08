@@ -272,13 +272,14 @@ resource "google_bigquery_table" "external_table" {
   max_staleness       = each.value["max_staleness"]
   project             = var.project_id
   deletion_protection = false
+  schema              = each.value["connection_id"] != null && !each.value["autodetect"] ? each.value["schema"] : null
 
   external_data_configuration {
     autodetect            = each.value["autodetect"]
     compression           = each.value["compression"]
     ignore_unknown_values = each.value["ignore_unknown_values"]
     max_bad_records       = each.value["max_bad_records"]
-    schema                = each.value["schema"]
+    schema                = each.value["connection_id"] == null && !each.value["autodetect"] ? each.value["schema"] : null
     source_format         = each.value["source_format"]
     source_uris           = each.value["source_uris"]
     metadata_cache_mode   = each.value["metadata_cache_mode"]
@@ -332,6 +333,10 @@ resource "google_bigquery_table" "external_table" {
     ignore_changes = [
       encryption_configuration # managed by google_bigquery_dataset.main.default_encryption_configuration
     ]
+    precondition {
+      condition     = (each.value["autodetect"] && each.value["schema"] == null) || (!each.value["autodetect"] && each.value["schema"] != null)
+      error_message = "External table misconfigured: ${each.key}. Schema is optional and shouldn't be included if the required field autodetect is on."
+    }
   }
 }
 
