@@ -333,10 +333,6 @@ resource "google_bigquery_table" "external_table" {
     ignore_changes = [
       encryption_configuration # managed by google_bigquery_dataset.main.default_encryption_configuration
     ]
-    precondition {
-      condition     = (each.value["autodetect"] && each.value["schema"] == null) || (!each.value["autodetect"] && each.value["schema"] != null)
-      error_message = "External table misconfigured: ${each.key}. Schema is optional and shouldn't be included if the required field autodetect is on."
-    }
   }
 }
 
