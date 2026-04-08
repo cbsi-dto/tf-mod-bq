@@ -199,7 +199,7 @@ variable "external_tables" {
     table_id              = string,
     description           = optional(string),
     autodetect            = bool,
-    compression           = string,
+    compression           = optional(string),
     ignore_unknown_values = bool,
     max_bad_records       = number,
     schema                = optional(string),
@@ -233,6 +233,10 @@ variable "external_tables" {
     }),
     expiration_time = string,
     labels          = map(string),
+    # When true (default), set friendly_name to table_id — legacy behavior. When false, use friendly_name (may be null).
+    use_default_friendly_name = optional(bool, true),
+    friendly_name             = optional(string),
+    deletion_protection       = optional(bool, false),
   }))
 }
 

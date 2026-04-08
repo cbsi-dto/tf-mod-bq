@@ -264,19 +264,19 @@ resource "google_bigquery_table" "materialized_view" {
 resource "google_bigquery_table" "external_table" {
   for_each            = local.external_tables
   dataset_id          = google_bigquery_dataset.main.dataset_id
-  friendly_name       = each.key
+  friendly_name       = try(each.value["use_default_friendly_name"], true) ? each.key : try(each.value["friendly_name"], null)
   table_id            = each.key
   description         = each.value["description"]
   labels              = each.value["labels"]
   expiration_time     = each.value["expiration_time"]
   max_staleness       = each.value["max_staleness"]
   project             = var.project_id
-  deletion_protection = false
+  deletion_protection = try(each.value["deletion_protection"], false)
   schema              = each.value["connection_id"] != null && !each.value["autodetect"] ? each.value["schema"] : null
 
   external_data_configuration {
     autodetect            = each.value["autodetect"]
-    compression           = each.value["compression"]
+    compression           = try(each.value["compression"], null)
     ignore_unknown_values = each.value["ignore_unknown_values"]
     max_bad_records       = each.value["max_bad_records"]
     schema                = each.value["connection_id"] == null && !each.value["autodetect"] ? each.value["schema"] : null
