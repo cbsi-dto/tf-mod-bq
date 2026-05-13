@@ -199,7 +199,7 @@ resource "google_bigquery_table" "view" {
   table_id            = each.key
   labels              = each.value["labels"]
   project             = var.project_id
-  deletion_protection = false
+  deletion_protection = var.deletion_protection
 
   view {
     query          = each.value["query"]
