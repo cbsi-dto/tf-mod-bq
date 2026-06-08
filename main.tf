@@ -52,6 +52,7 @@ resource "google_bigquery_dataset" "main" {
   max_time_travel_hours       = var.max_time_travel_hours
   project                     = var.project_id
   labels                      = var.dataset_labels
+  resource_tags               = var.dataset_tags
   is_case_insensitive         = var.is_case_insensitive
 
   dynamic "default_encryption_configuration" {
@@ -154,6 +155,7 @@ resource "google_bigquery_table" "main" {
   table_id            = each.key
   description         = each.value["description"]
   labels              = each.value["labels"]
+  resource_tags       = each.value["tags"]
   schema              = each.value["schema"]
   clustering          = each.value["clustering"]
   expiration_time     = each.value["expiration_time"]
@@ -198,6 +200,7 @@ resource "google_bigquery_table" "view" {
   schema              = each.value["schema"]
   table_id            = each.key
   labels              = each.value["labels"]
+  resource_tags       = each.value["tags"]
   project             = var.project_id
   deletion_protection = false
 
@@ -220,6 +223,7 @@ resource "google_bigquery_table" "materialized_view" {
   table_id            = each.key
   description         = each.value["description"]
   labels              = each.value["labels"]
+  resource_tags       = each.value["tags"]
   clustering          = each.value["clustering"]
   expiration_time     = each.value["expiration_time"] != null ? each.value["expiration_time"] : 0
   max_staleness       = each.value["max_staleness"]
@@ -268,6 +272,7 @@ resource "google_bigquery_table" "external_table" {
   table_id            = each.key
   description         = each.value["description"]
   labels              = each.value["labels"]
+  resource_tags       = each.value["tags"]
   expiration_time     = each.value["expiration_time"]
   max_staleness       = each.value["max_staleness"]
   project             = var.project_id
