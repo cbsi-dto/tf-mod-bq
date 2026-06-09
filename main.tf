@@ -15,11 +15,12 @@
  */
 
 locals {
-  tables             = { for table in var.tables : table["table_id"] => table }
-  views              = { for view in var.views : view["view_id"] => view }
-  materialized_views = { for mat_view in var.materialized_views : mat_view["view_id"] => mat_view }
-  external_tables    = { for external_table in var.external_tables : external_table["table_id"] => external_table }
-  routines           = { for routine in var.routines : routine["routine_id"] => routine }
+  tables              = { for table in var.tables : table["table_id"] => table }
+  views               = { for view in var.views : view["view_id"] => view }
+  materialized_views  = { for mat_view in var.materialized_views : mat_view["view_id"] => mat_view }
+  external_tables     = { for external_table in var.external_tables : external_table["table_id"] => external_table }
+  routines            = { for routine in var.routines : routine["routine_id"] => routine }
+  row_access_policies = { for policy in var.row_access_policies : "${policy["table_id"]}_${policy["policy_id"]}" => policy }
 
   auth_role_keys = [
     for role in var.access :
@@ -357,4 +358,18 @@ resource "google_bigquery_routine" "routine" {
   }
 
   return_type = each.value["return_type"]
+}
+
+resource "google_bigquery_row_access_policy" "row_access_policy" {
+  for_each         = local.row_access_policies
+  dataset_id       = google_bigquery_dataset.main.dataset_id
+  policy_id        = each.value["policy_id"]
+  table_id         = each.value["table_id"]
+  filter_predicate = each.value["filter_predicate"]
+  grantees         = each.value["grantees"]
+  project          = var.project_id
+
+  depends_on = [
+    google_bigquery_table.main,
+  ]
 }

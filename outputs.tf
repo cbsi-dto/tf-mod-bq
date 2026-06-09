@@ -94,3 +94,11 @@ output "routine_ids" {
   ]
   description = "Unique IDs for any routine being provisioned"
 }
+
+output "row_access_policy_ids" {
+  value = [
+    for policy in google_bigquery_row_access_policy.row_access_policy :
+    policy.policy_id
+  ]
+  description = "Unique IDs for any row access policies being provisioned"
+}
