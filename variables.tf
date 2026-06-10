@@ -264,3 +264,31 @@ variable "routines" {
     })),
   }))
 }
+
+variable "row_access_policies" {
+  description = "A list of objects which include policy_id, table_id, filter_predicate and grantees for row-level security."
+  default     = []
+  type = list(object({
+    policy_id        = string,
+    table_id         = string,
+    filter_predicate = string,
+    grantees         = optional(list(string)),
+  }))
+
+  validation {
+    condition = alltrue([
+      for policy in var.row_access_policies : contains(
+        [for table in var.tables : table.table_id],
+        policy.table_id
+      )
+    ])
+    error_message = "All table_id values in row_access_policies must exist in at least one of the tables. Please ensure that every table referenced in row access policies is defined in the respective resource list."
+  }
+
+  validation {
+    condition = length(var.row_access_policies) == length(distinct([
+      for policy in var.row_access_policies : "${policy.table_id}_${policy.policy_id}"
+    ]))
+    error_message = "Each combination of table_id and policy_id in row_access_policies must be unique."
+  }
+}
