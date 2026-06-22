@@ -168,8 +168,9 @@ resource "google_bigquery_table" "main" {
   dynamic "time_partitioning" {
     for_each = each.value["time_partitioning"] != null ? [each.value["time_partitioning"]] : []
     content {
-      type  = time_partitioning.value["type"]
-      field = time_partitioning.value["field"]
+      type          = time_partitioning.value["type"]
+      expiration_ms = time_partitioning.value["expiration_ms"]
+      field         = time_partitioning.value["field"]
     }
   }
 
@@ -234,8 +235,9 @@ resource "google_bigquery_table" "materialized_view" {
   dynamic "time_partitioning" {
     for_each = each.value["time_partitioning"] != null ? [each.value["time_partitioning"]] : []
     content {
-      type  = time_partitioning.value["type"]
-      field = time_partitioning.value["field"]
+      type          = time_partitioning.value["type"]
+      expiration_ms = time_partitioning.value["expiration_ms"]
+      field         = time_partitioning.value["field"]
     }
   }
 
