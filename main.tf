@@ -163,7 +163,7 @@ resource "google_bigquery_table" "main" {
   max_staleness            = each.value["max_staleness"]
   project                  = var.project_id
   deletion_protection      = each.value["deletion_protection"]
-  require_partition_filter = each.value["time_partitioning"] != null ? each.value["time_partitioning"]["require_partition_filter"] : null
+  require_partition_filter = time_partitioning.value["require_partition_filter"]
 
   dynamic "time_partitioning" {
     for_each = each.value["time_partitioning"] != null ? [each.value["time_partitioning"]] : []
@@ -230,7 +230,7 @@ resource "google_bigquery_table" "materialized_view" {
   max_staleness            = each.value["max_staleness"]
   project                  = var.project_id
   deletion_protection      = false
-  require_partition_filter = each.value["time_partitioning"] != null ? each.value["time_partitioning"]["require_partition_filter"] : null
+  require_partition_filter = time_partitioning.value["require_partition_filter"]
 
   dynamic "time_partitioning" {
     for_each = each.value["time_partitioning"] != null ? [each.value["time_partitioning"]] : []
