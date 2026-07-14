@@ -84,6 +84,12 @@ variable "dataset_labels" {
   default     = {}
 }
 
+variable "dataset_tags" {
+  description = "Key value pairs in a map for dataset resource tags. Tags are used for policy and conditional access control."
+  type        = map(string)
+  default     = null
+}
+
 # Format: list(objects)
 # domain: A domain to grant access to.
 # group_by_email: An email address of a Google Group to grant access to.
@@ -145,6 +151,7 @@ variable "tables" {
     expiration_time     = string,
     max_staleness       = optional(string),
     labels              = map(string),
+    tags                = optional(map(string)),
     deletion_protection = optional(bool, true),
   }))
 }
@@ -158,6 +165,7 @@ variable "views" {
     query          = string,
     use_legacy_sql = bool,
     labels         = map(string),
+    tags           = optional(map(string)),
     schema         = string,
   }))
 }
@@ -189,6 +197,7 @@ variable "materialized_views" {
     expiration_time = string,
     max_staleness   = optional(string),
     labels          = map(string),
+    tags            = optional(map(string)),
   }))
 }
 
@@ -233,6 +242,7 @@ variable "external_tables" {
     }),
     expiration_time = string,
     labels          = map(string),
+    tags            = optional(map(string)),
   }))
 }
 
