@@ -163,16 +163,14 @@ resource "google_bigquery_table" "main" {
   max_staleness            = each.value["max_staleness"]
   project                  = var.project_id
   deletion_protection      = each.value["deletion_protection"]
-  # In Google Provider v6+, require_partition_filter is a top-level table attribute
-  # (moved out of the deprecated time_partitioning nested block per provider standards)
-  require_partition_filter = each.value["time_partitioning"] != null ? each.value["time_partitioning"]["require_partition_filter"] : null
 
   dynamic "time_partitioning" {
     for_each = each.value["time_partitioning"] != null ? [each.value["time_partitioning"]] : []
     content {
-      type          = time_partitioning.value["type"]
-      expiration_ms = time_partitioning.value["expiration_ms"] != null ? time_partitioning.value["expiration_ms"] : 0
-      field         = time_partitioning.value["field"]
+      type                     = time_partitioning.value["type"]
+      expiration_ms            = time_partitioning.value["expiration_ms"] != null ? time_partitioning.value["expiration_ms"] : 0
+      field                    = time_partitioning.value["field"]
+      require_partition_filter = time_partitioning.value["require_partition_filter"]
     }
   }
 
@@ -232,16 +230,14 @@ resource "google_bigquery_table" "materialized_view" {
   max_staleness            = each.value["max_staleness"]
   project                  = var.project_id
   deletion_protection      = false
-  # In Google Provider v6+, require_partition_filter is a top-level table attribute
-  # (moved out of the deprecated time_partitioning nested block per provider standards)
-  require_partition_filter = each.value["time_partitioning"] != null ? each.value["time_partitioning"]["require_partition_filter"] : null
 
   dynamic "time_partitioning" {
     for_each = each.value["time_partitioning"] != null ? [each.value["time_partitioning"]] : []
     content {
-      type          = time_partitioning.value["type"]
-      expiration_ms = time_partitioning.value["expiration_ms"] != null ? time_partitioning.value["expiration_ms"] : 0
-      field         = time_partitioning.value["field"]
+      type                     = time_partitioning.value["type"]
+      expiration_ms            = time_partitioning.value["expiration_ms"] != null ? time_partitioning.value["expiration_ms"] : 0
+      field                    = time_partitioning.value["field"]
+      require_partition_filter = time_partitioning.value["require_partition_filter"]
     }
   }
 
