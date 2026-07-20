@@ -118,7 +118,8 @@ module "bigquery" {
       hive_partitioning_options = {
         mode = "AUTO"
         # DO NOT CHANGE - see above source_uris
-        source_uri_prefix = "gs://ci-bq-external-data/hive_partition_example/"
+        source_uri_prefix        = "gs://ci-bq-external-data/hive_partition_example/"
+        require_partition_filter = true
       }
       google_sheets_options = null
     },
