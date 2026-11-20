@@ -149,12 +149,13 @@ spec:
         description: A list of objects which includes view_id, view_query, clustering, time_partitioning, range_partitioning, expiration_time and labels
         varType: |-
           list(object({
-              view_id             = string,
-              description         = optional(string),
-              query               = string,
-              enable_refresh      = bool,
-              refresh_interval_ms = string,
-              clustering          = list(string),
+              view_id                          = string,
+              description                      = optional(string),
+              query                            = string,
+              enable_refresh                   = bool,
+              refresh_interval_ms              = string,
+              allow_non_incremental_definition = optional(bool, null),
+              clustering                       = list(string),
               time_partitioning = object({
                 expiration_ms            = string,
                 field                    = string,

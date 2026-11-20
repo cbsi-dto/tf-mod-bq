@@ -254,9 +254,10 @@ resource "google_bigquery_table" "materialized_view" {
   }
 
   materialized_view {
-    query               = each.value["query"]
-    enable_refresh      = each.value["enable_refresh"]
-    refresh_interval_ms = each.value["refresh_interval_ms"]
+    query                            = each.value["query"]
+    enable_refresh                   = each.value["enable_refresh"]
+    refresh_interval_ms              = each.value["refresh_interval_ms"]
+    allow_non_incremental_definition = each.value["allow_non_incremental_definition"]
   }
 
   lifecycle {
